@@ -1,0 +1,11 @@
+# gradle
+.gradle
+build/
+
+**/.idea/*
+**/*.iml
+# These IntelliJ files SHOULD be under version control
+!**/.idea/codeStyleSettings.xml
+!**/.idea/compiler.xml
+!**/.idea/encodings.xml
+!**/.idea/runConfigurations/

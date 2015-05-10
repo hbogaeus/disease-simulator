@@ -1,23 +1,41 @@
 package simulator;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 public class Population {
     private Person[][] population;
     private float infectionProbabilityPerDay;
+    private float mortalityProbabilityPerDay;
     private int minDays;
     private int maxDays;
-    private float mortalityProbabilityPerDay;
     private int sickPeople;
 
     public Population (int populationSize) {
+        sickPeople = 0;
         population = new Person[populationSize/2][populationSize/2];
-        for (int i = 0; i < populationSize / 2; i++){
-            for (int j = 0; j < populationSize / 2; j++){
-                this.population[i][j] = Person.builder().y(i).x(j).status(Status.HEALTHY).build();
+        for (int y = 0; y < populationSize / 2; y++){
+            for (int x = 0; x < populationSize / 2; x++){
+                this.population[x][y] = new Person(x, y, Status.HEALTHY);
             }
         }
+    }
+
+    public void setInfectionProbabilityPerDay(float infectionProbabilityPerDay) {
+        this.infectionProbabilityPerDay = infectionProbabilityPerDay;
+    }
+
+    public void setMortalityProbabilityPerDay(float mortalityProbabilityPerDay) {
+        this.mortalityProbabilityPerDay = mortalityProbabilityPerDay;
+    }
+
+    public void setMinDays(int minDays) {
+        this.minDays = minDays;
+    }
+
+    public void setMaxDays(int maxDays) {
+        this.maxDays = maxDays;
     }
 
     public Person[][] getPopulation() {
@@ -28,4 +46,15 @@ public class Population {
         return population[x][y];
     }
 
+    public void placeSickPerson(int x, int y) {
+        population[x][y].setStatus(Status.SICK);
+        sickPeople++;
+    }
+
+    public String toString(){
+
+        return "infectionProbabilityPerDay: " + infectionProbabilityPerDay + "\nmortalityProbabilityPerDay: " + mortalityProbabilityPerDay + "\nminDays: " + minDays + "\nmaxDays: " + maxDays + "\nsickPeople: " + sickPeople;
+    }
 }
+
+// Person.builder().y(i).x(j).status(Status.HEALTHY).build()

@@ -1,19 +1,42 @@
 package simulator;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-
 public class Person {
     private int x;
     private int y;
+    private int daysSpentSick;
+    private int maxDaySick;
     private Status status;
 
-    public Person(int x, int y, Status status) {
+    public Person(int x, int y) {
         this.x = x;
         this.y = y;
-        this.status = status;
+        this.status = Status.HEALTHY;
+    }
+
+    public void getSick(int maxDaySick) {
+        this.status = Status.SICK;
+        this.daysSpentSick = 0;
+        this.maxDaySick = maxDaySick;
+    }
+
+    public void getWell() {
+        this.status = Status.IMMUNE;
+    }
+
+    public int getMaxDaySick() {
+        return maxDaySick;
+    }
+
+    public void setMaxDaySick(int maxDaySick) {
+        this.maxDaySick = maxDaySick;
+    }
+
+    public int getDaysSpentSick() {
+        return daysSpentSick;
+    }
+
+    public void setDaysSpentSick(int daysSpentSick) {
+        this.daysSpentSick = daysSpentSick;
     }
 
     public void setX(int x) {

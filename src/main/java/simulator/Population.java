@@ -1,7 +1,8 @@
 package simulator;
 
 import lombok.Getter;
-import lombok.ToString;
+
+import java.util.Random;
 
 @Getter
 public class Population {
@@ -17,7 +18,7 @@ public class Population {
         population = new Person[populationSize/2][populationSize/2];
         for (int y = 0; y < populationSize / 2; y++){
             for (int x = 0; x < populationSize / 2; x++){
-                this.population[x][y] = new Person(x, y, Status.HEALTHY);
+                this.population[x][y] = new Person(x, y);
             }
         }
     }
@@ -47,7 +48,10 @@ public class Population {
     }
 
     public void placeSickPerson(int x, int y) {
-        population[x][y].setStatus(Status.SICK);
+        Random random = new Random();
+        int daysToBeSick = random.nextInt((maxDays - minDays) + 1) + minDays;
+
+        population[x][y].getSick(daysToBeSick);
         sickPeople++;
     }
 

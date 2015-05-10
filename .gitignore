@@ -7,4 +7,5 @@ build/
 # These IntelliJ files SHOULD be under version control
 !**/.idea/codeStyleSettings.xml
 !**/.idea/encodings.xml
+!**/.idea/compiler.xml
 !**/.idea/runConfigurations/

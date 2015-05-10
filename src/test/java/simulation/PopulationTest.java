@@ -1,5 +1,6 @@
 package simulation;
 
+import org.junit.Before;
 import org.junit.Test;
 import simulator.Person;
 import simulator.Population;
@@ -8,11 +9,19 @@ import static org.junit.Assert.*;
 
 public class PopulationTest {
 
-    Population population = new Population(20);
+    Population population;
+    Person[][] populationArray;
+
+    @Before
+    public void initPopulation() {
+        population = new Population(3);
+        population.getPopulation();
+    }
 
     @Test
     public void createPopulation() {
-        assertTrue(population.getPopulation().length  > 0);
+        assertTrue("Size of array", populationArray.length == 3);
+        assertTrue("Size of array", populationArray[0].length == 3);
     }
 
     @Test

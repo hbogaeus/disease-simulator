@@ -1,46 +1,39 @@
 package simulator;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 @Getter
+@Setter
+@ToString
 public class Population {
     private Person[][] population;
-    private float infectionProbabilityPerDay;
-    private float mortalityProbabilityPerDay;
+    private double infectionProbabilityPerDay;
+    private double mortalityProbabilityPerDay;
     private int minDays;
     private int maxDays;
-    private int sickPeople;
+    public LinkedList<Person> sickPeople;
 
     public Population (int populationSize) {
-        sickPeople = 0;
-        population = new Person[populationSize/2][populationSize/2];
-        for (int y = 0; y < populationSize / 2; y++){
-            for (int x = 0; x < populationSize / 2; x++){
+        sickPeople = new LinkedList<>();
+        population = new Person[populationSize][populationSize];
+        for (int y = 0; y < populationSize; y++){
+            for (int x = 0; x < populationSize; x++){
                 this.population[x][y] = new Person(x, y);
             }
         }
     }
 
-    public void setInfectionProbabilityPerDay(float infectionProbabilityPerDay) {
-        this.infectionProbabilityPerDay = infectionProbabilityPerDay;
+    public boolean shouldIBecomeDead() {
+        return Math.random() <= mortalityProbabilityPerDay;
     }
 
-    public void setMortalityProbabilityPerDay(float mortalityProbabilityPerDay) {
-        this.mortalityProbabilityPerDay = mortalityProbabilityPerDay;
-    }
-
-    public void setMinDays(int minDays) {
-        this.minDays = minDays;
-    }
-
-    public void setMaxDays(int maxDays) {
-        this.maxDays = maxDays;
-    }
-
-    public Person[][] getPopulation() {
-        return population;
+    public boolean shouldIBecomeSick() {
+        return Math.random() <= infectionProbabilityPerDay;
     }
 
     public Person getPersonInPopulation(int x, int y) {
@@ -48,17 +41,34 @@ public class Population {
     }
 
     public void placeSickPerson(int x, int y) {
+
+
+        getPersonInPopulation(x, y).becomeSick(daysToBeSick());
+        sickPeople.addFirst(getPersonInPopulation(x, y));
+    }
+
+    public int daysToBeSick() {
         Random random = new Random();
-        int daysToBeSick = random.nextInt((maxDays - minDays) + 1) + minDays;
-
-        population[x][y].getSick(daysToBeSick);
-        sickPeople++;
+        return random.nextInt((maxDays - minDays) + 1) + minDays;
     }
 
-    public String toString(){
+    public LinkedList<Person> getNeighbours(Person person){
+        int x = person.getX();
+        int y = person.getY();
 
-        return "infectionProbabilityPerDay: " + infectionProbabilityPerDay + "\nmortalityProbabilityPerDay: " + mortalityProbabilityPerDay + "\nminDays: " + minDays + "\nmaxDays: " + maxDays + "\nsickPeople: " + sickPeople;
+        int leftBound = (x >= 1) ? x - 1 : x;
+        int rightBound = (x < population.length - 1) ? x + 1 : x;
+        int upperBound = (y >= 1) ? y - 1 : y;
+        int lowerBound = (y < population.length - 1) ? y + 1 : y;
+
+        LinkedList<Person> neighbours = new LinkedList<>();
+
+        for (int rowNum = leftBound; rowNum <= rightBound; rowNum++) {
+            for (int colNum = upperBound; colNum <= lowerBound; colNum++){
+                neighbours.addFirst(getPersonInPopulation(colNum, rowNum));
+            }
+        }
+        return neighbours;
     }
+
 }
-
-// Person.builder().y(i).x(j).status(Status.HEALTHY).build()

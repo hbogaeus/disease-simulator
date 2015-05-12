@@ -10,8 +10,7 @@ import lombok.ToString;
 public class Person {
     private int x;
     private int y;
-    public int daysSpentSick;
-    public int daysToSpendSick;
+    public int sickDaysLeft;
     private Status status;
 
     public Person(int x, int y) {
@@ -20,10 +19,9 @@ public class Person {
         this.status = Status.HEALTHY;
     }
 
-    public void becomeSick(int maxDaySick) {
+    public void becomeSick(int sickDaysLeft) {
         this.status = Status.SICK;
-        this.daysSpentSick = 0;
-        this.daysToSpendSick = maxDaySick;
+        this.sickDaysLeft = sickDaysLeft;
     }
 
     public void becomeDead(){

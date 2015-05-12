@@ -37,9 +37,9 @@ public class Simulation {
                     howManyDied++;
                     continue;
                 }
-                sickPerson.daysSpentSick++;
+                sickPerson.sickDaysLeft--;
 
-                if (sickPerson.daysSpentSick == sickPerson.daysToSpendSick){
+                if (sickPerson.sickDaysLeft <= 0){
                     sickPerson.becomeWell();
                     upForRemoval.addLast(sickPerson);
                     howManyGotWell++;
@@ -76,6 +76,8 @@ public class Simulation {
                     totalPeopleSick,
                     totalPeopleDead
             ));
+
+
 
             auxSickPeople.clear();
             upForRemoval.clear();

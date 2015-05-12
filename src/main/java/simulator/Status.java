@@ -1,5 +1,8 @@
 package simulator;
 
 public enum Status {
-    HEALTHY, SICK, IMMUNE, DEAD
+    HEALTHY,    // Green
+    SICK,       // Red
+    IMMUNE,     // Yellow
+    DEAD        // Black
 }

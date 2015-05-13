@@ -3,9 +3,10 @@ import simulator.Simulation;
 import java.util.Scanner;
 
 public class Driver {
-    public static void main(String [] args) {
+    public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+        Population population;
 
         System.out.println("Use default values? [y / n]");
         String answer = scanner.nextLine();
@@ -13,7 +14,7 @@ public class Driver {
         if (answer.equals("n")){
             System.out.print("Size of population: ");
             int populationSize = scanner.nextInt();
-            Population population = new Population(populationSize);
+            population = new Population(populationSize);
 
             System.out.println("Probability of infection? (0 - 1)");
             population.setInfectionProbabilityPerDay(scanner.nextDouble());
@@ -34,15 +35,14 @@ public class Driver {
                 int y = scanner.nextInt();
                 population.placeSickPerson(x, y);
             }
+        } else {
+            population = new Population(50);
+            population.setInfectionProbabilityPerDay(0.5);
+            population.setMortalityProbabilityPerDay(0.0);
+            population.setMinDays(3);
+            population.setMaxDays(9);
+            population.placeSickPerson(24, 24);
         }
-
-        Population population = new Population(3);
-        population.setInfectionProbabilityPerDay(0.6);
-        population.setMortalityProbabilityPerDay(0.4);
-        population.setMinDays(3);
-        population.setMaxDays(9);
-        population.placeSickPerson(0, 0);
-        population.placeSickPerson(2, 2);
 
         scanner.close();
 
@@ -57,5 +57,6 @@ public class Driver {
         for (int i = 0; i < simulation.totalSimulationData.size(); i++)
             System.out.println("Day "  + i + ": " + simulation.totalSimulationData.get(i).toString());
 
+        System.out.print("Percent of population sick: " + simulation.totalSimulationData.getLast().getTotalPeopleSick() / population.getPopulation().length * 2);
     }
 }

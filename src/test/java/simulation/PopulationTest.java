@@ -5,7 +5,7 @@ import org.junit.Test;
 import simulator.Person;
 import simulator.Population;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class PopulationTest {
 

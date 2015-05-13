@@ -1,5 +1,6 @@
 import simulator.Population;
 import simulator.Simulation;
+
 import java.util.Scanner;
 
 public class Driver {
@@ -11,6 +12,7 @@ public class Driver {
         System.out.println("Use default values? [y / n]");
         String answer = scanner.nextLine();
 
+        // Query user for input values
         if (answer.equals("n")){
             System.out.print("Size of population: ");
             int populationSize = scanner.nextInt();
@@ -36,6 +38,7 @@ public class Driver {
                 population.placeSickPerson(x, y);
             }
         } else {
+            // Default values used while evaluating the model
             population = new Population(50);
             population.setInfectionProbabilityPerDay(0.5);
             population.setMortalityProbabilityPerDay(0.0);
@@ -46,6 +49,7 @@ public class Driver {
 
         scanner.close();
 
+        // Print input values for current simulation
         System.out.println("Infection probability: " + population.getInfectionProbabilityPerDay());
         System.out.println("Mortality probability: " + population.getMortalityProbabilityPerDay());
         System.out.println("Minimum days: " + population.getMinDays());
@@ -54,9 +58,11 @@ public class Driver {
 
         Simulation simulation = new Simulation(population);
 
+        // Print SimulationData for each day
         for (int i = 0; i < simulation.totalSimulationData.size(); i++)
             System.out.println("Day "  + i + ": " + simulation.totalSimulationData.get(i).toString());
 
+        // Print percentage of people infected by the disease
         System.out.print("Percent of population sick: " + simulation.totalSimulationData.getLast().getTotalPeopleSick() / population.getPopulation().length * 2);
     }
 }

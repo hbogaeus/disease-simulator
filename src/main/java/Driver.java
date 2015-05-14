@@ -1,5 +1,7 @@
+import simulator.Person;
 import simulator.Population;
 import simulator.Simulation;
+import simulator.Status;
 
 import java.util.Scanner;
 
@@ -7,54 +9,59 @@ public class Driver {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        Population population;
+        Population population = null;
+        String answer = "";
 
-        System.out.println("Use default values? [y / n]");
-        String answer = scanner.nextLine();
+        while (!answer.equals("n") && !answer.equals("y")) {
+            System.out.println("Use default values? [y / n]");
+            answer = scanner.nextLine();
 
-        // Query user for input values
-        if (answer.equals("n")){
-            System.out.print("Size of population: ");
-            int populationSize = scanner.nextInt();
-            population = new Population(populationSize);
+            // Query user for input values
+            if (answer.equals("n")){
+                System.out.print("Size of population: ");
+                int populationSize = scanner.nextInt();
+                population = new Population(populationSize);
 
-            System.out.println("Probability of infection? (0 - 1)");
-            population.setInfectionProbabilityPerDay(scanner.nextDouble());
-            System.out.println("Probability of mortality? (0 - 1)");
-            population.setMortalityProbabilityPerDay(scanner.nextDouble());
+                System.out.println("Probability of infection? (0 - 1)");
+                population.setInfectionProbabilityPerDay(scanner.nextDouble());
+                System.out.println("Probability of mortality? (0 - 1)");
+                population.setMortalityProbabilityPerDay(scanner.nextDouble());
 
-            System.out.println("Minimum days sick?");
-            population.setMinDays(scanner.nextInt());
-            System.out.println("Maximum days sick?");
-            population.setMaxDays(scanner.nextInt());
+                System.out.println("Minimum days sick?");
+                population.setMinDays(scanner.nextInt());
+                System.out.println("Maximum days sick?");
+                population.setMaxDays(scanner.nextInt());
 
-            System.out.print("Amount of sick people: ");
-            int sickPeople = scanner.nextInt();
-            for (int i = 0; i < sickPeople; i++) {
-                System.out.print("X value for sick person " + (i + 1) + ": ");
-                int x = scanner.nextInt();
-                System.out.print("Y value for sick person " + (i + 1) + ": ");
-                int y = scanner.nextInt();
-                population.placeSickPerson(x, y);
+                System.out.print("Amount of sick people: ");
+                int sickPeople = scanner.nextInt();
+                for (int i = 0; i < sickPeople; i++) {
+                    System.out.print("X value for sick person " + (i + 1) + ": ");
+                    int x = scanner.nextInt();
+                    System.out.print("Y value for sick person " + (i + 1) + ": ");
+                    int y = scanner.nextInt();
+                    population.placeSickPerson(x, y);
+                }
+            } else if (answer.equals("y")) {
+                // Default values used while evaluating the model
+                population = new Population(50);
+                population.setInfectionProbabilityPerDay(0.05);
+                population.setMortalityProbabilityPerDay(0.0);
+                population.setMinDays(3);
+                population.setMaxDays(9);
+                population.placeSickPerson(24, 24);
             }
-        } else {
-            // Default values used while evaluating the model
-            population = new Population(50);
-            population.setInfectionProbabilityPerDay(0.5);
-            population.setMortalityProbabilityPerDay(0.0);
-            population.setMinDays(3);
-            population.setMaxDays(9);
-            population.placeSickPerson(24, 24);
         }
 
         scanner.close();
 
         // Print input values for current simulation
+
         System.out.println("Infection probability: " + population.getInfectionProbabilityPerDay());
         System.out.println("Mortality probability: " + population.getMortalityProbabilityPerDay());
         System.out.println("Minimum days: " + population.getMinDays());
         System.out.println("Maximum days: " + population.getMaxDays());
-        System.out.println("Sick people: " + population.getSickPeople().size());
+        System.out.println("Number of sick people: " + population.getSickPeople().size());
+
 
         Simulation simulation = new Simulation(population);
 
@@ -62,7 +69,27 @@ public class Driver {
         for (int i = 0; i < simulation.totalSimulationData.size(); i++)
             System.out.println("Day "  + i + ": " + simulation.totalSimulationData.get(i).toString());
 
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < population.getPopulation().length; i++) {
+            for (int j = 0; j < population.getPopulation().length; j++) {
+                Person person = population.getPersonInPopulation(j, i);
+                if (person.getStatus() == Status.IMMUNE) {
+                    stringBuilder.append("I");
+                } else if (person.getStatus() == Status.DEAD) {
+                    stringBuilder.append("D");
+                } else if (person.getStatus() == Status.SICK) {
+                    stringBuilder.append("S");
+                } else {
+                    stringBuilder.append("H");
+                }
+            }
+            stringBuilder.append("\n");
+        }
+
+        System.out.println(stringBuilder.toString());
+
         // Print percentage of people infected by the disease
-        System.out.print("Percent of population sick: " + simulation.totalSimulationData.getLast().getTotalPeopleSick() / population.getPopulation().length * 2);
+        System.out.print("Percent of population sick: " + simulation.totalSimulationData.getLast().getTotalPeopleSick() / (double) population.getPopulation().length * 2);
     }
 }

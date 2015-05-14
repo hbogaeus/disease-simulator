@@ -56,6 +56,7 @@ public class Driver {
         boolean showDailySick = false;
         boolean showTotalInfected = false;
         boolean showTotalDead = false;
+        boolean showFinalMap = false;
 
 
         while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
@@ -124,78 +125,90 @@ public class Driver {
                         showTotalDead = true;
                 }
 
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show ASCII map of final day? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showFinalMap = false;
+                    else if (outputAnswer.equals("y"))
+                        showFinalMap = true;
+                }
 
             } else if (outputAnswer.equals("y")) {
-                // Default values used while evaluating the model
+                // Default values used for output
                 showDailyInfected = true;
                 showDailyDead = true;
                 showDailyRecovered = true;
                 showDailySick = true;
                 showTotalInfected = true;
                 showTotalDead = true;
+                showFinalMap = true;
             }
         }
 
         scanner.close();
 
         // Print input values for current simulation
-
+        System.out.println("\nSettings for this simulation");
         System.out.println(String.format("%-22s %.2f", "Infection probability:", population.getInfectionProbabilityPerDay()));
         System.out.println(String.format("%-22s %.2f", "Mortality probability:", population.getInfectionProbabilityPerDay()));
         System.out.println(String.format("%-22s %d" ,"Minimum days:", population.getMinDays()));
         System.out.println(String.format("%-22s %d" ,"Maximum days:", population.getMaxDays()));
-        System.out.println(String.format("%-22s %d" ,"Number of sick people:", population.getSickPeople().size()));
+        System.out.println(String.format("%-22s %d\n" ,"Number of sick people:", population.getSickPeople().size()));
 
 
         Simulation simulation = new Simulation(population);
 
         // Print SimulationData for each day
-        for (int i = 0; i < simulation.totalSimulationData.size(); i++) {
-            SimulationData simulationData = simulation.totalSimulationData.get(i);
-            StringBuilder output = new StringBuilder(String.format("[Day %3d]", i));
+        if (showDailyInfected || showDailyDead || showDailyRecovered || showDailySick || showTotalInfected || showTotalDead) {
+            for (int i = 0; i < simulation.totalSimulationData.size(); i++) {
+                SimulationData simulationData = simulation.totalSimulationData.get(i);
+                StringBuilder output = new StringBuilder(String.format("[Day %3d]", i));
 
-            if (showDailyInfected){
-                output.append(String.format(" Infected today: %-3d", simulationData.getHowManyGotSick()));
-            }
-            if (showDailyDead) {
-                output.append(String.format(" Deceased today: %-3d", simulationData.getHowManyDied()));
-            }
-            if (showDailyRecovered) {
-                output.append(String.format(" Recovered today: %-3d", simulationData.getHowManyGotWell()));
-            }
-            if (showDailySick) {
-                output.append(String.format(" Sick today: %-3d", simulationData.getHowManyWasSickToday()));
-            }
-            if (showTotalInfected) {
-                output.append(String.format(" Total sick: %-4d", simulationData.getTotalPeopleSick()));
-            }
-            if (showTotalDead) {
-                output.append(String.format(" Total deceased: %-4d", simulationData.getTotalPeopleDead()));
-            }
-
-            System.out.println(output.toString());
-        }
-
-
-        // Print ASCII map of the last day of the simulation
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < population.getPopulation().length; i++) {
-            for (int j = 0; j < population.getPopulation().length; j++) {
-                Person person = population.getPersonInPopulation(j, i);
-                if (person.getStatus() == Status.IMMUNE) {
-                    stringBuilder.append("I");
-                } else if (person.getStatus() == Status.DEAD) {
-                    stringBuilder.append("D");
-                } else if (person.getStatus() == Status.SICK) {
-                    stringBuilder.append("S");
-                } else {
-                    stringBuilder.append("H");
+                if (showDailyInfected){
+                    output.append(String.format(" Infected today: %-3d", simulationData.getHowManyGotSick()));
                 }
+                if (showDailyDead) {
+                    output.append(String.format(" Deceased today: %-3d", simulationData.getHowManyDied()));
+                }
+                if (showDailyRecovered) {
+                    output.append(String.format(" Recovered today: %-3d", simulationData.getHowManyGotWell()));
+                }
+                if (showDailySick) {
+                    output.append(String.format(" Sick today: %-3d", simulationData.getHowManyWasSickToday()));
+                }
+                if (showTotalInfected) {
+                    output.append(String.format(" Total sick: %-4d", simulationData.getTotalPeopleSick()));
+                }
+                if (showTotalDead) {
+                    output.append(String.format(" Total deceased: %-4d", simulationData.getTotalPeopleDead()));
+                }
+
+                System.out.println(output.toString());
             }
-            stringBuilder.append("\n");
         }
 
-        System.out.println(stringBuilder.toString());
+        if (showFinalMap) {
+            // Print ASCII map of the last day of the simulation
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < population.getPopulation().length; i++) {
+                for (int j = 0; j < population.getPopulation().length; j++) {
+                    Person person = population.getPersonInPopulation(j, i);
+                    if (person.getStatus() == Status.IMMUNE) {
+                        stringBuilder.append("I");
+                    } else if (person.getStatus() == Status.DEAD) {
+                        stringBuilder.append("D");
+                    } else if (person.getStatus() == Status.SICK) {
+                        stringBuilder.append("S");
+                    } else {
+                        stringBuilder.append("H");
+                    }
+                }
+                stringBuilder.append("\n");
+            }
+            System.out.println(stringBuilder.toString());
+        }
     }
 }

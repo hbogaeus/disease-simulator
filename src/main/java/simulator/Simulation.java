@@ -97,6 +97,7 @@ public class Simulation {
             auxSickPeople.clear();
             upForRemoval.clear();
             howManyDied = 0;
+            howManyGotWell = 0;
         }
     }
 }

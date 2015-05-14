@@ -1,7 +1,4 @@
-import simulator.Person;
-import simulator.Population;
-import simulator.Simulation;
-import simulator.Status;
+import simulator.*;
 
 import java.util.Scanner;
 
@@ -10,14 +7,15 @@ public class Driver {
 
         Scanner scanner = new Scanner(System.in);
         Population population = null;
-        String answer = "";
+        String inputAnswer = "";
+        String outputAnswer = "";
 
-        while (!answer.equals("n") && !answer.equals("y")) {
-            System.out.println("Use default values? [y / n]");
-            answer = scanner.nextLine();
+        while (!inputAnswer.equals("n") && !inputAnswer.equals("y")) {
+            System.out.println("Use default input values? [y / n]");
+            inputAnswer = scanner.nextLine();
 
             // Query user for input values
-            if (answer.equals("n")){
+            if (inputAnswer.equals("n")){
                 System.out.print("Size of population: ");
                 int populationSize = scanner.nextInt();
                 population = new Population(populationSize);
@@ -41,7 +39,7 @@ public class Driver {
                     int y = scanner.nextInt();
                     population.placeSickPerson(x, y);
                 }
-            } else if (answer.equals("y")) {
+            } else if (inputAnswer.equals("y")) {
                 // Default values used while evaluating the model
                 population = new Population(50);
                 population.setInfectionProbabilityPerDay(0.05);
@@ -52,23 +50,134 @@ public class Driver {
             }
         }
 
+        boolean showDailyInfected = false;
+        boolean showDailyDead = false;
+        boolean showDailyRecovered = false;
+        boolean showDailySick = false;
+        boolean showTotalInfected = false;
+        boolean showTotalDead = false;
+
+
+        while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+            System.out.println("Use default output values? [y / n]");
+            outputAnswer = scanner.nextLine();
+
+            // Query user for input values
+            if (outputAnswer.equals("n")){
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show daily infected? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showDailyInfected = false;
+                    else if (outputAnswer.equals("y"))
+                        showDailyInfected = true;
+                }
+
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show daily deceased? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showDailyDead = false;
+                    else if (outputAnswer.equals("y"))
+                        showDailyDead = true;
+                }
+
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show daily recovered? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showDailyRecovered = false;
+                    else if (outputAnswer.equals("y"))
+                        showDailyRecovered = true;
+                }
+
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show daily sick? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showDailySick = false;
+                    else if (outputAnswer.equals("y"))
+                        showDailySick = true;
+                }
+
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show total sick? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showTotalInfected = false;
+                    else if (outputAnswer.equals("y"))
+                        showTotalInfected = true;
+                }
+
+                outputAnswer = "";
+                while (!outputAnswer.equals("n") && !outputAnswer.equals("y")) {
+                    System.out.println("Show total deceased? [y / n]");
+                    outputAnswer = scanner.nextLine();
+                    if (outputAnswer.equals("n"))
+                        showTotalDead = false;
+                    else if (outputAnswer.equals("y"))
+                        showTotalDead = true;
+                }
+
+
+            } else if (outputAnswer.equals("y")) {
+                // Default values used while evaluating the model
+                showDailyInfected = true;
+                showDailyDead = true;
+                showDailyRecovered = true;
+                showDailySick = true;
+                showTotalInfected = true;
+                showTotalDead = true;
+            }
+        }
+
         scanner.close();
 
         // Print input values for current simulation
 
-        System.out.println("Infection probability: " + population.getInfectionProbabilityPerDay());
-        System.out.println("Mortality probability: " + population.getMortalityProbabilityPerDay());
-        System.out.println("Minimum days: " + population.getMinDays());
-        System.out.println("Maximum days: " + population.getMaxDays());
-        System.out.println("Number of sick people: " + population.getSickPeople().size());
+        System.out.println(String.format("%-22s %.2f", "Infection probability:", population.getInfectionProbabilityPerDay()));
+        System.out.println(String.format("%-22s %.2f", "Mortality probability:", population.getInfectionProbabilityPerDay()));
+        System.out.println(String.format("%-22s %d" ,"Minimum days:", population.getMinDays()));
+        System.out.println(String.format("%-22s %d" ,"Maximum days:", population.getMaxDays()));
+        System.out.println(String.format("%-22s %d" ,"Number of sick people:", population.getSickPeople().size()));
 
 
         Simulation simulation = new Simulation(population);
 
         // Print SimulationData for each day
-        for (int i = 0; i < simulation.totalSimulationData.size(); i++)
-            System.out.println("Day "  + i + ": " + simulation.totalSimulationData.get(i).toString());
+        for (int i = 0; i < simulation.totalSimulationData.size(); i++) {
+            SimulationData simulationData = simulation.totalSimulationData.get(i);
+            StringBuilder output = new StringBuilder(String.format("[Day %3d]", i));
 
+            if (showDailyInfected){
+                output.append(String.format(" Infected today: %-3d", simulationData.getHowManyGotSick()));
+            }
+            if (showDailyDead) {
+                output.append(String.format(" Deceased today: %-3d", simulationData.getHowManyDied()));
+            }
+            if (showDailyRecovered) {
+                output.append(String.format(" Recovered today: %-3d", simulationData.getHowManyGotWell()));
+            }
+            if (showDailySick) {
+                output.append(String.format(" Sick today: %-3d", simulationData.getHowManyWasSickToday()));
+            }
+            if (showTotalInfected) {
+                output.append(String.format(" Total sick: %-4d", simulationData.getTotalPeopleSick()));
+            }
+            if (showTotalDead) {
+                output.append(String.format(" Total deceased: %-4d", simulationData.getTotalPeopleDead()));
+            }
+
+            System.out.println(output.toString());
+        }
+
+
+        // Print ASCII map of the last day of the simulation
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < population.getPopulation().length; i++) {
@@ -88,8 +197,5 @@ public class Driver {
         }
 
         System.out.println(stringBuilder.toString());
-
-        // Print percentage of people infected by the disease
-        System.out.print("Percent of population sick: " + simulation.totalSimulationData.getLast().getTotalPeopleSick() / (double) population.getPopulation().length * 2);
     }
 }

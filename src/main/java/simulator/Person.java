@@ -19,8 +19,6 @@ public class Person {
         this.sickDaysLeft = sickDaysLeft;
     }
 
-    /* GENERIC GETTERS AND SETTERS */
-
     public void becomeDead(){
         this.status = Status.DEAD;
     }
@@ -28,6 +26,8 @@ public class Person {
     public void becomeWell() {
         this.status = Status.IMMUNE;
     }
+
+    /* GENERIC GETTERS AND SETTERS */
 
     public int getX() {
         return this.x;

@@ -10,11 +10,14 @@ public class Population {
     private int minDays;
     private int maxDays;
     public LinkedList<Person> sickPeople;
+    Random rand;
 
     // Creates a new population based on input and initializes sickPeople list
-    public Population (int populationSize) {
+    public Population (int populationSize, int seed) {
         sickPeople = new LinkedList<>();
         population = new Person[populationSize][populationSize];
+        if (seed == 0) rand = new Random();
+        else if (seed > 0) rand = new Random(seed);
         for (int y = 0; y < populationSize; y++){
             for (int x = 0; x < populationSize; x++){
                 this.population[x][y] = new Person(x, y);
@@ -24,12 +27,12 @@ public class Population {
 
     // Returns whether Person under inspection should die or not
     public boolean shouldIBecomeDead() {
-        return Math.random() <= mortalityProbabilityPerDay;
+        return rand.nextDouble() <= mortalityProbabilityPerDay;
     }
 
     // Returns whether Person under inspection should get sick or not
     public boolean shouldIBecomeSick() {
-        return Math.random() <= infectionProbabilityPerDay;
+        return rand.nextDouble() <= infectionProbabilityPerDay;
     }
 
     public Person getPersonInPopulation(int x, int y) {
@@ -43,8 +46,7 @@ public class Population {
     }
 
     public int daysToBeSick() {
-        Random random = new Random();
-        return random.nextInt((maxDays - minDays) + 1) + minDays;
+        return rand.nextInt((maxDays - minDays) + 1) + minDays;
     }
 
     // Inspect bounds of Person in grid, return bounds for all four directions

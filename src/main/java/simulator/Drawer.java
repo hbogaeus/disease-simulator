@@ -17,7 +17,7 @@ public class Drawer {
 
     public class PopulationPane extends JPanel {
 
-        Population populationToDraw = new Population(4);
+        Population populationToDraw = new Population(4, 7031);
 
         @Override
         public void paintComponent(Graphics graphics) {

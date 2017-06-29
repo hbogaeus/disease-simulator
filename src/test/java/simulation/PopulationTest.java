@@ -14,7 +14,7 @@ public class PopulationTest {
 
     @Before
     public void initPopulation() {
-        population = new Population(3);
+        population = new Population(3, 0);
         population.getPopulation();
     }
 

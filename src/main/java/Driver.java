@@ -10,6 +10,7 @@ public class Driver {
         String inputAnswer = "";
         String outputAnswer = "";
 
+
         while (!inputAnswer.equals("n") && !inputAnswer.equals("y")) {
             System.out.println("Use default input values? [y / n]");
             inputAnswer = scanner.nextLine();
@@ -18,7 +19,7 @@ public class Driver {
             if (inputAnswer.equals("n")){
                 System.out.print("Size of population: ");
                 int populationSize = scanner.nextInt();
-                population = new Population(populationSize);
+                population = new Population(populationSize, 0);
 
                 System.out.println("Probability of infection? (0 - 1)");
                 population.setInfectionProbabilityPerDay(scanner.nextDouble());
@@ -41,7 +42,7 @@ public class Driver {
                 }
             } else if (inputAnswer.equals("y")) {
                 // Default values used while evaluating the model
-                population = new Population(50);
+                population = new Population(50, 0);
                 population.setInfectionProbabilityPerDay(0.05);
                 population.setMortalityProbabilityPerDay(0.0);
                 population.setMinDays(3);
@@ -152,7 +153,7 @@ public class Driver {
         // Print input values for current simulation
         System.out.println("\nSettings for this simulation");
         System.out.println(String.format("%-22s %.2f", "Infection probability:", population.getInfectionProbabilityPerDay()));
-        System.out.println(String.format("%-22s %.2f", "Mortality probability:", population.getInfectionProbabilityPerDay()));
+        System.out.println(String.format("%-22s %.2f", "Mortality probability:", population.getMortalityProbabilityPerDay()));
         System.out.println(String.format("%-22s %d" ,"Minimum days:", population.getMinDays()));
         System.out.println(String.format("%-22s %d" ,"Maximum days:", population.getMaxDays()));
         System.out.println(String.format("%-22s %d\n" ,"Number of sick people:", population.getSickPeople().size()));
@@ -210,5 +211,19 @@ public class Driver {
             }
             System.out.println(stringBuilder.toString());
         }
+    }
+
+    public static double drive(double infectionRate, int seed) {
+        Population population = new Population(50, seed);
+        population.setInfectionProbabilityPerDay(infectionRate);
+        population.setMortalityProbabilityPerDay(0.0);
+        population.setMinDays(3);
+        population.setMaxDays(9);
+        population.placeSickPerson(24, 24);
+
+        Simulation simulation = new Simulation(population);
+        SimulationData simulationData = simulation.totalSimulationData.get(simulation.totalSimulationData.size() - 1);
+        return simulationData.getTotalPeopleSick();
+
     }
 }
